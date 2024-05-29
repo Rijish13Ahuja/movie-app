@@ -1,121 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import MovieList from './components/MovieList';
-import MovieListHeading from './components/MovieListHeading';
-import SearchBox from './components/SearchBox';
-import AddFavourite from './components/AddFavorites';
-import RemoveFavourites from './components/RemoveFavourites';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import Favourites from './pages/Favourites';
+import Navbar from './components/Navbar';
+import { useState } from 'react';
 
-const App = () => {
-	const [movies, setMovies] = useState([]);
-	const [favourites, setFavourites] = useState([]);
-	const [searchValue, setSearchValue] = useState('');
+function App() {
 
-	const getMovieRequest = async (searchValue) => {
-		const url = `https://dummyapi.online/api/movie?search=${searchValue}`;
-		console.log('Fetching movies with URL:', url);
+  const [mode,setMode]=useState('dark')
+  localStorage.setItem("mode","dark")
 
-		const response = await fetch(url);
-		const responseJson = await response.json();
+  return (
+    <div className={`App w-full min-h-screen ${(mode==="dark") ? ("bg-gradient-to-r from-[#5a5c6a] to-[#202d3a]") :("bg-[#E6E8FA]")}`}>
+      <Navbar mode={mode} setMode={setMode} />
+      <div className='w-full h-[1px] bg-black'/>
 
-		console.log('API response:', responseJson);
-
-		if (responseJson.Search) {
-			setMovies(responseJson.Search);
-		} else {
-			setMovies([]); 
-		}
-	};
-
-	useEffect(() => {
-		if (searchValue) {
-			getMovieRequest(searchValue);
-		}
-	}, [searchValue]);
-
-	useEffect(() => {
-		const movieFavourites = JSON.parse(
-			localStorage.getItem('react-movie-app-favourites')
-		);
-
-		if (movieFavourites) {
-			setFavourites(movieFavourites);
-		}
-	}, []);
-
-	const saveToLocalStorage = (items) => {
-		localStorage.setItem('react-movie-app-favourites', JSON.stringify(items));
-	};
-
-	const addFavouriteMovie = (movie) => {
-		const newFavouriteList = [...favourites, movie];
-		setFavourites(newFavouriteList);
-		saveToLocalStorage(newFavouriteList);
-	};
-
-	const removeFavouriteMovie = (movie) => {
-		const newFavouriteList = favourites.filter(
-			(favourite) => favourite.imdbID !== movie.imdbID
-		);
-
-		setFavourites(newFavouriteList);
-		saveToLocalStorage(newFavouriteList);
-	};
-
-	return (
-		<Router>
-			<div className='container-fluid movie-app'>
-				<Routes>
-					<Route
-						path='/'
-						element={
-							<>
-								<div className='row d-flex align-items-center mt-4 mb-4'>
-									<MovieListHeading heading='Movies' />
-									<SearchBox
-										searchValue={searchValue}
-										setSearchValue={setSearchValue}
-									/>
-									<Link to='/favourites' className='btn btn-primary ml-4'>
-										View Favourites
-									</Link>
-								</div>
-								<div className='row movie-list'>
-									<MovieList
-										movies={movies}
-										handleFavouritesClick={addFavouriteMovie}
-										favouriteComponent={AddFavourite}
-									/>
-								</div>
-							</>
-						}
-					/>
-					<Route
-						path='/favourites'
-						element={
-							<>
-								<div className='row d-flex align-items-center mt-4 mb-4'>
-									<MovieListHeading heading='Favourites' />
-									<Link to='/' className='btn btn-primary ml-4'>
-										Back to Movies
-									</Link>
-								</div>
-								<div className='row movie-list'>
-									<MovieList
-										movies={favourites}
-										handleFavouritesClick={removeFavouriteMovie}
-										favouriteComponent={RemoveFavourites}
-									/>
-								</div>
-							</>
-						}
-					/>
-				</Routes>
-			</div>
-		</Router>
-	);
-};
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/favourites' element={<Favourites/>} />
+      </Routes>
+        
+    </div>
+  );
+}
 
 export default App;
+
+
+// background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(90,92,106,1) 0%, rgba(32,45,58,1) 81.3% );
