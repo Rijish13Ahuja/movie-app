@@ -4,30 +4,28 @@ import MovieCard from '../components/MovieCard'
 import { useNavigate } from 'react-router-dom'
 
 const Favourites = () => {
-  const { favouritesList }=useSelector((state)=>state.fav)
+  const { favouritesList } = useSelector((state) => state.fav)
+  const navigate = useNavigate()
 
-  const navigate=useNavigate()
   return (
-    <div>
-      {
-        (favouritesList.length) ? (
-          <div>
-          {
-            favouritesList.map((item)=>{
-              return <MovieCard key={item.id} data={item} type={2} />
-            })
-          }
-
-          </div>
-        ) : (
-          <div className='w-full h-[calc(100vh-5rem)] flex gap-y-4 flex-col items-center justify-center '>
-              <div className='md:text-3xl text-xl text-white font-semibold'>No movie added to favourites yet</div>
-
-              <button onClick={()=>navigate("/")} className='text-sm font-semibold bg-yellow-400 rounded-md border-1 border-black p-2 w-fit hover:scale-110 transition-all duration-1000'>Add Now</button>
-          </div>
-
-        )
-      }
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-800 to-purple-900 py-10">
+      {favouritesList.length ? (
+        <div className="flex flex-wrap justify-center gap-6">
+          {favouritesList.map((item) => (
+            <MovieCard key={item.id} data={item} type={2} />
+          ))}
+        </div>
+      ) : (
+        <div className="w-full h-full flex flex-col items-center justify-center text-center text-white">
+          <h1 className="md:text-3xl text-xl font-semibold mb-4">No movies added to favourites yet</h1>
+          <button
+            onClick={() => navigate("/")}
+            className="text-sm font-semibold bg-yellow-400 rounded-md border-1 border-black p-2 hover:scale-110 transition-transform duration-300"
+          >
+            Add Now
+          </button>
+        </div>
+      )}
     </div>
   )
 }

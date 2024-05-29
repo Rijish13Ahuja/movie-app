@@ -9,18 +9,16 @@ const Home = () => {
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
 
-  // Fetching .env variable, movie data API URL
-  const apiUrl = process.env.REACT_APP_MOVIE_URL
+  const apiUrl = "https://dummyapi.online/api/movies"
 
   const getMoviesData = async () => {
     setLoading(true)
     try {
-      console.log('Fetching movies from URL:', apiUrl); // Log the API URL
+      console.log('Fetching movies from URL:', apiUrl)
       const response = await fetch(apiUrl)
       const data = await response.json()
-      console.log('Fetched data:', data); // Log the fetched data
+      console.log('Fetched data:', data)
 
-      // Sorting data in decreasing order of rating
       const sortedData = data.sort((a, b) => b.rating - a.rating)
       setMovieData(sortedData)
       dispatch(addMoviesList(sortedData))
@@ -35,7 +33,7 @@ const Home = () => {
   }, [])
 
   return (
-    <div className='w-full min-h-[calc(100vh-5rem)] flex justify-center items-center'>
+    <div className="w-full min-h-screen bg-gradient-to-br from-green-700 to-blue-800 flex justify-center items-center py-10">
       {loading ? (
         <div>
           <Loader />
@@ -43,15 +41,13 @@ const Home = () => {
       ) : (
         <>
           {movieData.length ? (
-            <div>
+            <div className="flex flex-wrap justify-center gap-6">
               {movieData.map((item) => (
                 <MovieCard key={item.id} data={item} />
               ))}
             </div>
           ) : (
-            <div>
-              Data Not Found
-            </div>
+            <div className="text-white text-xl">Data Not Found</div>
           )}
         </>
       )}
